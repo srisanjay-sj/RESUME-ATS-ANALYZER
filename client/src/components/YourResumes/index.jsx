@@ -42,7 +42,7 @@ const YourResumes = () => {
       const formData = new FormData();
       formData.append("resume", selectedFile);
 
-      const uploadResponse = await fetch("http://localhost:5000/resume/upload", {
+      const uploadResponse = await fetch("https://resume-ats-project-2.onrender.com/resume/upload", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -63,7 +63,7 @@ const YourResumes = () => {
         jobDescription: jobDescription,
       };
 
-      const analyzeResponse = await fetch("http://localhost:5000/resume/analyze", {
+      const analyzeResponse = await fetch("https://resume-ats-project-2.onrender.com/resume/analyze", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
