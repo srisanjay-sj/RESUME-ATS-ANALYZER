@@ -7,6 +7,7 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -63,7 +64,7 @@ const Register = () => {
             <input
               type="text"
               name="name"
-              placeholder="Enter your name"
+              placeholder="your name"
               value={name}
               onChange={handleNameChange}
               required
@@ -84,14 +85,22 @@ const Register = () => {
 
           <div className="input-group">
             <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={handlePasswordChange}
-              required
-            />
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={handlePasswordChange}
+                required
+              />
+              <span
+                className="eye-icon"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "🙈" : "👁"}
+              </span>
+            </div>
           </div>
 
           <button type="submit" disabled={loading}>
