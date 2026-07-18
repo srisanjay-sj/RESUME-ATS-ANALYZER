@@ -48,7 +48,8 @@ export const analyzeWithGemini = async (resumeText, jobDescription) => {
     );
 
     const data = await response.json();
-    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const rawText = parts.map((p) => p.text || "").join("").trim();
 
     if (!rawText) {
       throw new Error("Empty Gemini response");
