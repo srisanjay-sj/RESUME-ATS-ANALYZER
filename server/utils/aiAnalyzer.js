@@ -32,7 +32,7 @@ export const analyzeWithGemini = async (resumeText, jobDescription) => {
     }
 
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}",
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,16 +42,31 @@ export const analyzeWithGemini = async (resumeText, jobDescription) => {
               parts: [{ text: buildPrompt(resumeText, jobDescription) }]
             }
           ],
-          generationConfig: { temperature: 0.2 }
+          generationConfig: {
+            temperature: 0.2,
+            maxOutputTokens: 8192,
+            thinkingConfig: { thinkingLevel: "low" }
+          }
         })
       }
     );
 
     const data = await response.json();
+
+    if (data?.error) {
+      console.error("Gemini API Error:", JSON.stringify(data.error));
+      throw new Error(data.error.message || "Gemini API returned an error");
+    }
+
     const parts = data?.candidates?.[0]?.content?.parts || [];
-    const rawText = parts.map((p) => p.text || "").join("").trim();
+    const rawText = parts
+      .filter((p) => !p.thought)
+      .map((p) => p.text || "")
+      .join("")
+      .trim();
 
     if (!rawText) {
+      console.error("Empty Gemini response. Full data:", JSON.stringify(data));
       throw new Error("Empty Gemini response");
     }
 
